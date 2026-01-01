@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pradeep's Ultimate Crypto Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
+<script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+<body>
+
+<div class="container">
+<h2>🚀 Pradeep's Ultimate Crypto Dashboard</h2>
+
+<div id="loginSection">
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+<button id="registerBtn">Register</button>
+<button id="loginBtn">Login</button>
+<p id="loginMsg">Login/Register to continue</p>
+</div>
+
+<div id="dashboard" style="display:none;">
+<div class="section">
+<h3>Wallet & Balance</h3>
+<p>Balance: ₹<span id="balance">0</span></p>
+<input type="number" id="addAmt" placeholder="Add Balance">
+<button id="addBalanceBtn">Add</button>
+<p>Live Prices: BTC ₹<span id="btcLive">--</span>, ETH ₹<span id="ethLive">--</span>, LTC ₹<span id="ltcLive">--</span></p>
+</div>
+
+<div class="section">
+<h3>Trade</h3>
+<select id="coinSelect"><option>BTC</option><option>ETH</option><option>LTC</option></select>
+<input type="number" id="tradeAmt" placeholder="Amount">
+<button id="buyBtn">Buy</button>
+<button id="sellBtn" style="background:#ef4444;">Sell</button>
+</div>
+
+<div class="section">
+<h3>Transaction History</h3>
+<table class="table" id="historyTbl">
+<tr><th>Type</th><th>Coin</th><th>Qty</th><th>Price</th><th>P/L</th></tr>
+</table>
+</div>
+
+<div class="section">
+<h3>Charts</h3>
+<div id="chartsContainer">
+<div class="chartBox"><canvas id="candlestick5m"></canvas></div>
+<div class="chartBox"><canvas id="candlestick15m"></canvas></div>
+<div class="chartBox"><canvas id="candlestick1h"></canvas></div>
+</div>
+<div id="depthChartBox"><canvas id="depthChart"></canvas></div>
+
+<div class="section">
+<h3>Portfolio Distribution</h3>
+<canvas id="portfolioChart" height="200"></canvas>
+</div>
+
+<button id="modeBtn">Toggle Dark/Light Mode</button>
+</div>
+
+<div class="footer">Powered by Pradeep</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

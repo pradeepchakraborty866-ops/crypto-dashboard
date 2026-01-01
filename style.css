@@ -1,0 +1,22 @@
+if(typeof user==="undefined") var user = JSON.parse(localStorage.getItem('user')) || {coins:{BTC:0,ETH:0,LTC:0},balance:0};
+if(typeof balanceSpan==="undefined") var balanceSpan=document.getElementById('balance');
+if(typeof dashboard==="undefined") var dashboard=document.getElementById('dashboard');
+if(typeof loginSection==="undefined") var loginSection=document.getElementById('loginSection');
+if(typeof loginMsg==="undefined") var loginMsg=document.getElementById('loginMsg');
+
+function loadUser(){ if(user){ dashboard.style.display='block'; loginSection.style.display='none'; balanceSpan.innerText=user.balance; loginMsg.innerText=user.username?`Welcome ${user.username}!`:"Welcome!"; } }
+loadUser();
+
+document.getElementById('registerBtn').onclick=function(){ var u=document.getElementById('username').value.trim(); var p=document.getElementById('password').value.trim(); if(!u||!p){ alert("Fill all fields"); return; } user={username:u,password:p,balance:10000,coins:{BTC:0,ETH:0,LTC:0}}; localStorage.setItem('user',JSON.stringify(user)); alert("Registered!"); loadUser(); }
+document.getElementById('loginBtn').onclick=function(){ var u=document.getElementById('username').value.trim(); var p=document.getElementById('password').value.trim(); var stored=JSON.parse(localStorage.getItem('user')); if(stored&&u===stored.username&&p===stored.password){ alert("Login Success!"); user=stored; loadUser(); } else alert("Invalid login"); }
+
+document.getElementById('modeBtn').onclick=function(){ document.body.classList.toggle('light'); }
+
+function fetchPrices(){ fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin&vs_currencies=inr").then(r=>r.json()).then(d=>{ if(d&&d.bitcoin&&d.ethereum&&d.litecoin){ document.getElementById('btcLive').innerText=Math.round(d.bitcoin.inr); document.getElementById('ethLive').innerText=Math.round(d.ethereum.inr); document.getElementById('ltcLive').innerText=Math.round(d.litecoin.inr); } else{ console.log("API invalid response:",d); } }).catch(e=>console.log(e)); }
+fetchPrices(); setInterval(fetchPrices,5000);
+
+function addHistory(type,coin,qty,price){ if(!user||!user.coins) return; var tbl=document.getElementById('historyTbl'); var pl=(type==='Buy')?0:Math.round(qty*(price-(price*0.98))); var row=tbl.insertRow(); row.innerHTML=`<td>${type}</td><td>${coin}</td><td>${qty}</td><td>${price}</td><td style="color:${pl>=0?'lime':'red'}">${pl}</td>`; }
+
+document.getElementById('buyBtn').onclick=function(){ if(!user||!user.coins){ alert("Please login!"); return; } var coin=document.getElementById('coinSelect').value; var qty=parseFloat(document.getElementById('tradeAmt').value); var price=parseFloat(document.getElementById('btcLive').innerText); if(isNaN(qty)||qty<=0||user.balance<qty*price){ alert("Invalid"); return; } user.balance-=qty*price; user.coins[coin]+=qty; localStorage.setItem('user',JSON.stringify(user)); balanceSpan.innerText=user.balance; addHistory('Buy',coin,qty,price); document.getElementById('tradeAmt').value=''; }
+
+document.getElementById('sellBtn').onclick=function(){ if(!user||!user.coins){ alert("Please login!"); return; } var coin=document.getElementById('coinSelect').value; var qty=parseFloat(document.getElementById('tradeAmt').value); var price=parseFloat(document.getElementById('btcLive').innerText); if(isNaN(qty)||qty<=0||user.coins[coin]<qty){ alert("Invalid"); return; } user.balance+=qty*price; user.coins[coin]-=qty; localStorage.setItem('user',JSON.stringify(user)); balanceSpan.innerText=user.balance; addHistory('Sell',coin,qty,price); document.getElementById('tradeAmt').value=''; }
